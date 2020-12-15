@@ -1,0 +1,74 @@
+﻿@using BookShop.Models;
+@model IEnumerable<Book>
+@{
+
+
+}
+<div >
+    <h1 class="display-4">Добро пожаловать в книжный магазин</h1>
+</div>
+
+<div>
+    <a asp-action="GetAction" class="btn btn-warning">Загрузить книги c book24.ru</a>
+    <a asp-action="AddBook" class="btn btn-dark">Добавить книгу</a>
+    <h1 class="display-4"></h1>
+</div>
+<div class="text-center">
+    <form method="get" asp-action="SearchBooks" asp-controller="home" >
+    <div class="form-inline form-group text-center">
+        <label class="control-label"> Название книги: </label>
+        <input name="Name" class="form-control" value="@FilterOptions.NameofBook" />
+        <label class="control-label">Автор: </label>
+        <input name="Author" class="form-control" value="@FilterOptions.Author" />
+        <label class="control-label">Цена: </label>
+        <input type="number" name="Price" class="form-control" value="@FilterOptions.Price" />
+        <input type="submit" value="Отфильтровать" class="btn btn-dark" />
+    </div>
+    </form>
+</div>
+<div>
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <td> № п/п (Id)</td>
+                <td> Обложка </td>
+                <td>Наименование книги</td>
+                <td>Автор</td>
+                <td>Жанр</td>
+                <td>Дата публицкации</td>
+                <td>Цена</td>
+                <td>Анотация</td>
+                <td>Ссылка на оригинальную страницу</td>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+
+                @foreach (Book p in Model)
+                {
+
+                    <tr>
+
+                        <td>@p.Id</td>
+                        <td>
+                            <img src=@p.ImageURL>
+                        </td>
+                        <td>
+                            <a asp-action="GetBookById" asp-route-id="@p.Id">@p.Name</a>
+                        </td>
+                        <td>@p.Author</td>
+                        <td>@p.Genre</td>
+                        <td>@p.PublicationDate</td>
+                        <td typeof="money">@p.Price &#8381</td>
+                        <td>@p.BookDescription</td>
+
+                        <td>
+                            <a href=@p.OriginalPageURL target="_blank"> Ссылка на оригинальную страницу</a>
+                        </td>
+                    </tr>
+
+                }
+        </tbody>
+    </table>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>

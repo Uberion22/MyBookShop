@@ -1,0 +1,53 @@
+﻿
+@model BookShop.Models.Book;
+@{
+    ViewBag.Title = "Добавление книги";
+}
+<form asp-action="AddBook" asp-controller="home">
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"> Наименование книги</label>
+        <input type="text" asp-for="Name" class="form-control" value="Проблемы с миром" />
+        <span asp-validation-for="Name"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Price" class="control-label">Цена</label>
+            <input type="number" asp-for="Price" class="form-control" value="550" />
+            <span asp-validation-for="Price"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Author" class="control-label"> Автор</label>
+        <input type="text" asp-for="Author" class="form-control" value="Джо Аберкомби" />
+        <span asp-validation-for="Author"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Genre" class="control-label"> Жанр</label>
+        <input type="text" asp-for="Genre" class="form-control" />
+        <span asp-validation-for="Genre"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ImageURL" class="control-label"> Сылка на обложку</label>
+        <input type="text" asp-for="ImageURL" class="form-control" />
+        <span asp-validation-for="ImageURL"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="OriginalPageURL" class="control-label">Ссылка на сторонний ресурс содержащий данную книгу</label>
+        <input type="text" asp-for="OriginalPageURL" class="form-control" />
+        <span asp-validation-for="OriginalPageURL"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="BookDescription" class="control-label"> Анотация книги </label>
+        <input type="text" asp-for="BookDescription" class="form-control"  />
+    </div>
+    <div class="form-group">
+        <label asp-for="PublicationDate" class="control-label"> Дата добавления(редактирования)</label>
+        <input type="datetime" asp-for="PublicationDate" class="form-control" value=@DateTime.Now />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Добавить" class="btn btn-dark" />
+    </div>
+</form>
+@section scripts{
+
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
