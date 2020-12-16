@@ -25,13 +25,11 @@ namespace BookShop.Repository
         public void Create(Book item)
         {
             db.Books.Add(item);
-            Save();
         }
 
         public void Edit(Book book)
         {
             db.Entry(book).State = EntityState.Modified;
-            Save();
         }
 
         public void Delete(int id)
@@ -71,27 +69,9 @@ namespace BookShop.Repository
             GC.SuppressFinalize(this);
         }
 
-        public void AddBooksByParser(IEnumerable<Book> item)
-        {
-            foreach (Book p in item)
-            {
-                var book = db.Books.FirstOrDefault(book => book.Name == p.Name);
-                if (book != null)
-                {
-                    db.Entry(book).State = EntityState.Modified;
-                    int i = book.Id;
-                    book.Name = p.Name;
-                    book.ImageURL = p.ImageURL;
-                    book.Author = p.Author;
-                    book.Price = p.Price;
-                    book.OriginalPageURL = p.OriginalPageURL;
-                }
-                else
-                {
-                    db.Books.Add(p);
-                }
-                db.SaveChanges();
-            }
-        }
+        //public void AddBooksByParser(IEnumerable<Book> item)
+        //{
+
+        //}
     }
 }

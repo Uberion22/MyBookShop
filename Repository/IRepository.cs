@@ -4,14 +4,11 @@ using System.Linq;
 
 namespace BookShop.Repository
 {
-    public interface IRepository<T> : IDisposable
-    where T : class
+    public interface IRepository<T> : IDisposable where T : class
     {
         IQueryable<T> GetBooksList();
 
         T GetBookById(int id);
-
-        void AddBooksByParser(IEnumerable<T> item);
 
         void Create(T item);
 
@@ -21,5 +18,4 @@ namespace BookShop.Repository
         
         void Save();
     }
-
 }

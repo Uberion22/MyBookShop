@@ -16,9 +16,10 @@ namespace BookShop.parser
     /// </summary>
     public static class Parser
     {
-        public static string GetDataByTag(HtmlNode node, string teg, string _class)
+        private static readonly string basicURL = "https://book24.ru";
+        public static string GetDataByTag(HtmlNode node, string tag, string _class)
         {
-            var data = HttpUtility.HtmlDecode(node.SelectNodes(node.XPath + teg)
+            var data = HttpUtility.HtmlDecode(node.SelectNodes(node.XPath + tag)
                   .Where(el => el.Attributes["class"].Value.Contains(_class))
                   .Select(el => el.InnerText)
                   .Aggregate("", (acc, val) => acc += val?.ToString())
@@ -29,48 +30,56 @@ namespace BookShop.parser
         /// <summary>
         /// Метод предназначен для выборки информации о книге по типу тэга html и классу css
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
         public static Book GetAllBookData(HtmlNode item)
         {
             var name = GetDataByTag(item, "//a", "book-preview__title-link");
-            string[] _price = (GetDataByTag(item, "//div", "book-preview__price-current")).ToLower().Split('р');
-            var price = Decimal.Parse(_price[0].Trim(' '));
-            string author = "";
-            author = GetDataByTag(item, "//a", "book-preview__author-link");
-            if (author == "")
+            var temp_price = (GetDataByTag(item, "//div", "book-preview__price-current")).ToLower().Split('р');
+            var price = Decimal.Parse(temp_price[0].Trim(' '));
+            var author = GetDataByTag(item, "//a", "book-preview__author-link");
+            if (String.IsNullOrEmpty(author))
                 author = GetDataByTag(item, "//span", "book-preview__author-link");
             var imgURL = HttpUtility.HtmlDecode(item.SelectNodes(item.XPath + "//img")
               .Select(el => el.Attributes["data-src"].Value)
               .Aggregate("", (acc, val) => acc += val?.ToString())
               );
-            var originalURL = "https://book24.ru" + HttpUtility.HtmlDecode(item.SelectNodes(item.XPath + "//a")
+            var originalURL = basicURL + HttpUtility.HtmlDecode(item.SelectNodes(item.XPath + "//a")
                               .Where(el => el.Attributes["class"].Value.Contains("book-preview__title-link"))
                               .Select(el => el.Attributes["href"].Value)
                               .Aggregate("", (acc, val) => acc += val?.ToString())
                               );
-            Book _book = new Book() { Name = name, Author = author, Price = price, ImageURL = imgURL, OriginalPageURL = originalURL, PublicationDate = DateTime.Now };
+            Book book = new Book() 
+            {
+                Name = name,
+                Author = author,
+                Price = price,
+                ImageURL = imgURL,
+                OriginalPageURL = originalURL,
+                PublicationDate = DateTime.Now
+            };
             
-            return _book;
+            return book;
         }
 
         public static IEnumerable<Book> GetBooks(int pageCount)
         {
-            List<Book> books = new List<Book>();
+            var books = new List<Book>();
             var doc = new HtmlDocument();
-            var http = @"https://book24.ru/catalog/";
+            var http = basicURL+ "/catalog/";
             for (int i = 1; i < pageCount + 1; i++)
             {
                 if (i > 1)
-                    http = @"https://book24.ru/catalog/" + "page-" + i + "/";
-                var txtHTML = GetPage(http);
+                {
+                    http = basicURL + "/catalog/page-" + i + "/";
+                }
+                var txtHTML = GetPage(@http);
                 doc.LoadHtml(txtHTML);
-                IEnumerable<HtmlNode> _Nodes = doc.DocumentNode
+                var Nodes = doc.DocumentNode
                                       .SelectNodes("//div")
                                       .Where(el => el.Attributes["class"].Value.Contains("book-preview _d js-catalog-element-card"));
-                foreach (var item in _Nodes)
+                
+                foreach (var item in Nodes)
                 {
-                    Book book = GetAllBookData(item);
+                    var book = GetAllBookData(item);
                     books.Add(book);
                 }
             }
@@ -83,16 +92,23 @@ namespace BookShop.parser
             var result = String.Empty;
             var request = (HttpWebRequest)WebRequest.Create(url);
             var response = (HttpWebResponse)request.GetResponse();
+            
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var responseStream = response.GetResponseStream();
+                
                 if (responseStream != null)
                 {
                     StreamReader streamReader;
+
                     if (response.CharacterSet != null)
+                    {
                         streamReader = new StreamReader(responseStream, Encoding.GetEncoding(response.CharacterSet));
+                    }
                     else
+                    {
                         streamReader = new StreamReader(responseStream);
+                    }
                     result = streamReader.ReadToEnd();
                     streamReader.Close();
                 }
@@ -102,11 +118,5 @@ namespace BookShop.parser
             return result;
         }
 
-        public static void DownlodImage(string _imgURL, string _imageFolder, string _imageName)
-        {
-            _ = new Uri(_imgURL);
-            WebClient web = new WebClient(); ;
-            web.DownloadFile(_imgURL, Path.Combine(_imageFolder, _imageName));
-        }
     }
 }

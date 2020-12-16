@@ -27,8 +27,11 @@ namespace BookShop.Controllers
 
         public IActionResult GetAction()
         {
-            ViewBag.Filter = new FilterOptions() { Price = 0 };
-            _manager.AddBooksFrom(Parser.GetBooks(5));
+            ViewBag.Filter = new FilterOptions() 
+            {
+                Price = 0 
+            };
+            _manager.AddBooksFromSite(Parser.GetBooks(5));
             
             return View("Index", _manager.GetBooksList());
         }
@@ -68,7 +71,12 @@ namespace BookShop.Controllers
         [HttpGet]
         public ActionResult SearchBooks(string name, string author, decimal price)
         {
-            ViewBag.Filter = new FilterOptions() { NameOfBook = name, Author = author, Price = price };
+            ViewBag.Filter = new FilterOptions() 
+            {
+                NameOfBook = name,
+                Author = author,
+                Price = price 
+            };
             var bookList = _manager.GetBooksWithFilter(ViewBag.Filter);
             
             return View("Index", bookList);
