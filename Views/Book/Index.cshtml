@@ -1,27 +1,24 @@
 ﻿@using BookShop.Models;
 @model IEnumerable<Book>
-@{
 
-
-}
 <div >
     <h1 class="display-4">Добро пожаловать в книжный магазин</h1>
 </div>
 
-<div>
+<div align="center">
     <a asp-action="GetAction" class="btn btn-warning">Загрузить книги c book24.ru</a>
     <a asp-action="AddBook" class="btn btn-dark">Добавить книгу</a>
     <h1 class="display-4"></h1>
 </div>
-<div class="text-center">
-    <form method="get" asp-action="SearchBooks" asp-controller="home" >
-    <div class="form-inline form-group text-center">
+<div>
+    <form method="get" asp-action="SearchBooks" asp-controller="Book" >
+    <div class="form-inline form-group " style="text-align: center;" >
         <label class="control-label"> Название книги: </label>
-        <input name="Name" class="form-control" value="@FilterOptions.NameofBook" />
+        <input name="Name" class="form-control" value="@ViewBag.Filter.NameOfBook" />
         <label class="control-label">Автор: </label>
-        <input name="Author" class="form-control" value="@FilterOptions.Author" />
-        <label class="control-label">Цена: </label>
-        <input type="number" name="Price" class="form-control" value="@FilterOptions.Price" />
+        <input name="Author" class="form-control" value="@ViewBag.Filter.Author" />
+        <label class="control-label">Цена < </label>
+        <input type="number" name="Price" class="form-control" value="@ViewBag.Filter.Price" />
         <input type="submit" value="Отфильтровать" class="btn btn-dark" />
     </div>
     </form>

@@ -7,18 +7,21 @@ using System.Linq;
 
 namespace BookShop.Repository
 {
-    public class SQLBookRepository : IRepository<Book>
+    public class MSSQLBookRepository : IRepository<Book>
     {
-        private BookContext db;
+        private readonly BookContext db;
         private bool disposed = false;
-        public SQLBookRepository(BookContext bookContext)
+
+        public MSSQLBookRepository(BookContext bookContext)
         {
             db = bookContext;
         }
+
         public IQueryable<Book> GetBooksList()
         {
             return db.Books;
         }
+
         public void Create(Book item)
         {
             db.Books.Add(item);
@@ -30,6 +33,7 @@ namespace BookShop.Repository
             db.Entry(book).State = EntityState.Modified;
             Save();
         }
+
         public void Delete(int id)
         {
             Book book = db.Books.Find(id);
@@ -39,14 +43,17 @@ namespace BookShop.Repository
                 Save();
             }
         }
+
         public Book GetBookById(int id)
         {
             return db.Books.Find(id);
         }
+
         public void Save()
         {
             db.SaveChanges();
         }
+
         public virtual void Dispose(bool disposing)
         {
             if (!disposed)
@@ -63,6 +70,7 @@ namespace BookShop.Repository
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
         public void AddBooksByParser(IEnumerable<Book> item)
         {
             foreach (Book p in item)

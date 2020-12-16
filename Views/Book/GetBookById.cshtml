@@ -1,9 +1,6 @@
 ﻿@model BookShop.Models.Book
 
-@{
-
-    ViewBag.Title = "Подробная информация о книге";
-}
+<h3>Подровная информацияо книге</h3>
 <h2> @Model.Name</h2>
 <div>
     <div style="float: left; width: 30%;">
@@ -32,11 +29,11 @@
             <dd>@Model.Id</dd>
         </dl>
         <div class="form-inline">
-            <form asp-controller="Home" asp-action="GetBookById">
+            <form asp-controller="Book" asp-action="GetBookById">
                     <input type="submit" class="btn btn-danger" value="Удалить" />
             </form>
-            <a asp-controller="Home" asp-action="EditBook" class="btn btn-dark" asp-route-id="@Model.Id"> Редактировать книгу</a>              
-            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">На главную</a>
+            <a asp-controller="Book" asp-action="EditBook" class="btn btn-dark" asp-route-id="@Model.Id"> Редактировать книгу</a>              
+            <a asp-controller="Book" asp-action="Index" class="btn btn-secondary">На главную</a>
         </div>
     </div>
 </div>

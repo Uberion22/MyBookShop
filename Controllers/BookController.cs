@@ -1,87 +1,84 @@
-﻿
-using BookShop.Models;
+﻿using BookShop.Models;
 using BookShop.parser;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace BookShop.Controllers
 {
-    public class HomeController : Controller
+    public class BookController : Controller
     {
-
-        private readonly BookManager manager;
-
-
-        public HomeController(BookManager _manager)
+        private readonly BookManager _manager;
+        
+        public BookController(BookManager manager)
         {
-            manager = _manager;
+            _manager = manager;
         }
-
-
+        
         public IActionResult Index()
         {
-
-            return View(manager.GetBooksList());
+            ViewBag.Filter = new FilterOptions() { Price = 0};
+            
+            return View(_manager.GetBooksList());
         }
-
+        
         public IActionResult Privacy()
         {
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
         public IActionResult GetAction()
         {
-            manager.AddBooksFrom(Parser.GetBooks(5));
-            return View("Index", manager.GetBooksList());
+            ViewBag.Filter = new FilterOptions() { Price = 0 };
+            _manager.AddBooksFrom(Parser.GetBooks(5));
+            
+            return View("Index", _manager.GetBooksList());
         }
 
         public IActionResult AddBook()
         {
             return View();
         }
+       
         [HttpPost]
         public ActionResult AddBook(Book book)
         {
             if (ModelState.IsValid)
             {
-                manager.AddBook(book);
+                _manager.AddBook(book);
+                
                 return RedirectToAction("Index");
             }
+            
             return View(book);
         }
-
 
         [HttpPost, ActionName("GetBookById")]
         public ActionResult DeleteConfirmed(int id)
         {
-            manager.DeleteBook(id);
+            _manager.DeleteBook(id);
+            
             return RedirectToAction("Index");
         }
 
         public ActionResult GetBookById(int id)
         {
-            var book = manager.GetBookById(id);
+            var book = _manager.GetBookById(id);
+            
             return View(book);
         }
         [HttpGet]
-        public ActionResult SearchBooks(string Name, string Author, decimal Price)
+        public ActionResult SearchBooks(string name, string author, decimal price)
         {
-            FilterOptions.NameofBook = Name;
-            FilterOptions.Author = Author;
-            FilterOptions.Price = Price;
-            var bookList = manager.GetBooksWithFilter();
+            ViewBag.Filter = new FilterOptions() { NameOfBook = name, Author = author, Price = price };
+            var bookList = _manager.GetBooksWithFilter(ViewBag.Filter);
+            
             return View("Index", bookList);
         }
 
         [HttpGet]
         public ActionResult EditBook(int id)
         {
-           var book = manager.GetBookById(id);
+            var book = _manager.GetBookById(id);
+            
             return View(book);
         }
         
@@ -90,9 +87,11 @@ namespace BookShop.Controllers
         {
             if (ModelState.IsValid)
             {
-                manager.EditBook(book);
+                _manager.EditBook(book);
+                
                 return RedirectToAction("Index");
             }
+            
             return View(book);
         }
     }

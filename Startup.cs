@@ -23,7 +23,7 @@ namespace BookShop
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IRepository<Book>, SQLBookRepository>();
+            services.AddTransient<IRepository<Book>, MSSQLBookRepository>();
             services.AddTransient<BookManager>();
             services.AddTransient<BookContext>();
             string connection = Configuration.GetConnectionString("DefaultConnection");
@@ -42,7 +42,7 @@ namespace BookShop
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Book/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
@@ -57,7 +57,7 @@ namespace BookShop
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Book}/{action=Index}/{id?}");
             });
         }
     }
